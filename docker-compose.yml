@@ -1,0 +1,23 @@
+# Vulnerable MCP Server - Docker Compose
+# Created by IntegSec (https://integsec.com)
+# Licensed under CC BY 4.0
+
+services:
+  vulnerable-mcp:
+    build: .
+    image: integsec/vulnerable-mcp-server:latest
+    container_name: vulnerable-mcp-server
+    ports:
+      - "3000:3000"  # HTTP/SSE
+      - "3001:3001"  # WebSocket
+    environment:
+      - NODE_ENV=production
+      - FLAG_ENV_MASTER=FLAG{env_master}
+      - FLAG_RUG_PULL=FLAG{rug_pull_victim}
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "node", "-e", "require('http').get('http://localhost:3000/health', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 5s

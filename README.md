@@ -102,6 +102,63 @@ npm run start:all
 
 ---
 
+## 🐳 Docker Deployment
+
+The easiest way to run the Vulnerable MCP Server is using Docker.
+
+### Using Docker Hub
+
+```bash
+# Pull and run the latest image
+docker run -d \
+  --name vulnerable-mcp \
+  -p 3000:3000 \
+  -p 3001:3001 \
+  integsec/vulnerable-mcp-server:latest
+
+# Check server status
+docker logs vulnerable-mcp
+
+# Stop the server
+docker stop vulnerable-mcp
+```
+
+### Using Docker Compose
+
+```bash
+# Start the server
+docker-compose up -d
+
+# View logs
+docker-compose logs -f
+
+# Stop the server
+docker-compose down
+```
+
+### Building from Source
+
+```bash
+# Build the Docker image
+docker build -t vulnerable-mcp-server .
+
+# Run the container
+docker run -d \
+  --name vulnerable-mcp \
+  -p 3000:3000 \
+  -p 3001:3001 \
+  vulnerable-mcp-server
+```
+
+### Accessing the Server
+
+Once running, the server is accessible at:
+- **HTTP/SSE**: `http://localhost:3000/mcp`
+- **WebSocket**: `ws://localhost:3001`
+- **stdio**: Via `docker exec -it vulnerable-mcp node dist/index.js --transport=stdio`
+
+---
+
 ## 🔧 Configuration
 
 ### Claude Desktop Integration

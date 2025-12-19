@@ -30,11 +30,18 @@ if (!existsSync(dataDir)) {
 const db = new Database(dbPath);
 console.log(`✅ Database created at: ${dbPath}\n`);
 
-// Create users table
+// Create tables
 console.log('📋 Creating tables...');
 
+// Drop tables in reverse order of foreign key dependencies
 db.exec(`
+  DROP TABLE IF EXISTS secrets;
+  DROP TABLE IF EXISTS flags;
   DROP TABLE IF EXISTS users;
+`);
+
+// Create users table
+db.exec(`
   CREATE TABLE users (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     username TEXT NOT NULL UNIQUE,
@@ -48,7 +55,6 @@ console.log('  ✓ users table created');
 
 // Create flags table (for SQL injection challenge)
 db.exec(`
-  DROP TABLE IF EXISTS flags;
   CREATE TABLE flags (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     flag TEXT NOT NULL,
@@ -60,7 +66,6 @@ console.log('  ✓ flags table created');
 
 // Create secrets table
 db.exec(`
-  DROP TABLE IF EXISTS secrets;
   CREATE TABLE secrets (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,
