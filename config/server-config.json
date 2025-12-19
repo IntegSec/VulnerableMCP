@@ -1,0 +1,67 @@
+{
+  "server": {
+    "name": "vulnerable-mcp-server",
+    "version": "1.0.0",
+    "environment": "development",
+    "creator": "IntegSec",
+    "website": "https://integsec.com"
+  },
+  "security": {
+    "authentication": false,
+    "authorization": false,
+    "inputValidation": false,
+    "rateLimiting": false,
+    "cors": "allow-all",
+    "tls": false,
+    "warning": "All security features intentionally disabled!"
+  },
+  "api": {
+    "keys": {
+      "primary": "sk-vulnerable-primary-key-12345",
+      "secondary": "sk-vulnerable-secondary-key-67890",
+      "admin": "sk-admin-super-secret-key-99999"
+    },
+    "endpoints": {
+      "mcp": "/mcp",
+      "health": "/health",
+      "debug": "/debug"
+    }
+  },
+  "database": {
+    "type": "sqlite",
+    "path": "./data/database.sqlite",
+    "credentials": {
+      "username": "admin",
+      "password": "admin123"
+    }
+  },
+  "features": {
+    "detailedErrors": true,
+    "stackTraces": true,
+    "environmentExposure": true,
+    "toolMutation": true,
+    "ansiOutput": true
+  },
+  "flags": {
+    "config_flag": "FLAG{config_exposed}",
+    "hint": "This configuration file should never be publicly accessible!"
+  },
+  "internal": {
+    "secretPaths": [
+      "/data/secrets/",
+      "/config/",
+      "/scripts/"
+    ],
+    "adminEmails": [
+      "admin@vulnerable-mcp.local",
+      "security@integsec.com"
+    ]
+  },
+  "disclaimer": {
+    "warning": "THIS IS AN INTENTIONALLY VULNERABLE APPLICATION",
+    "purpose": "Educational and security testing only",
+    "creator": "IntegSec",
+    "license": "CC-BY-4.0",
+    "attribution": "Must credit IntegSec (https://integsec.com) when using or sharing"
+  }
+}
