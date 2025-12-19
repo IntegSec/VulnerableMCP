@@ -1,5 +1,7 @@
 # Vulnerable MCP Server - Documentation for Claude
 
+**Created by [IntegSec](https://integsec.com)** | License: [CC BY 4.0](LICENSE)
+
 ## ⚠️ IMPORTANT WARNING ⚠️
 
 This is an **INTENTIONALLY VULNERABLE** MCP (Model Context Protocol) server designed for:

@@ -35,7 +35,7 @@ export async function startWebSocketServer() {
   // VULNERABILITY: No origin verification
   const wss = new WebSocketServer({
     server: httpServer,
-    verifyClient: (info) => {
+    verifyClient: (info: any) => {
       // VULNERABILITY: Accept ALL connections regardless of origin!
       console.error(`WebSocket connection from origin: ${info.origin || 'unknown'}`);
       console.error(`⚠️  No origin validation - accepting connection!`);

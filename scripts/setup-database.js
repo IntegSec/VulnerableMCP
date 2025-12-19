@@ -81,7 +81,7 @@ const insertUser = db.prepare(`
 
 insertUser.run('admin', 'admin@vulnerable-mcp.local', 'admin123', 'administrator', 'Admin secret key: sk-admin-12345');
 insertUser.run('alice', 'alice@vulnerable-mcp.local', 'password123', 'user', null);
-insertUser.run('bob', 'bob@vulnerable-mcp.local', 'bob2024', 'user', 'Bob\\'s API key: sk-bob-67890');
+insertUser.run('bob', 'bob@vulnerable-mcp.local', 'bob2024', 'user', 'Bob\'s API key: sk-bob-67890');
 insertUser.run('charlie', 'charlie@vulnerable-mcp.local', 'charlie!', 'moderator', null);
 insertUser.run('eve', 'eve@vulnerable-mcp.local', 'eve123', 'user', null);
 

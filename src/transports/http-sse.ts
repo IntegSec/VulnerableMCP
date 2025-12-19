@@ -54,7 +54,7 @@ export async function startHttpServer() {
   });
 
   // MCP endpoint (VULNERABILITY: No authentication!)
-  app.post('/mcp', async (req: Request, res: Response) => {
+  app.post('/mcp', async (req: Request, res: Response): Promise<void> => {
     try {
       // VULNERABILITY: No authentication check
       // VULNERABILITY: No rate limiting
@@ -76,7 +76,7 @@ export async function startHttpServer() {
 
       if (!jsonrpc || jsonrpc !== '2.0') {
         // VULNERABILITY: Detailed error message
-        return res.status(400).json({
+        res.status(400).json({
           jsonrpc: '2.0',
           error: {
             code: -32600,
@@ -89,6 +89,7 @@ export async function startHttpServer() {
           },
           id: id || null,
         });
+        return;
       }
 
       // VULNERABILITY: Method name not validated

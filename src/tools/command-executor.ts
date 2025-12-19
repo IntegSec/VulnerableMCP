@@ -36,13 +36,11 @@ export async function handleExecuteCommand(args: any) {
     // WRONG: Directly executing user-provided command
     const output = execSync(command, {
       encoding: 'utf-8',
-      // VULNERABILITY: Using shell enables injection attacks
-      shell: true,  // Should use shell: false with proper argument array
       // VULNERABILITY: No timeout
       timeout: 60000,  // Way too long!
       // VULNERABILITY: Inherits environment (contains FLAG!)
       env: process.env,
-    });
+    }).toString();
 
     return {
       content: [

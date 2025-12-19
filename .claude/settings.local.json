@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node scripts/setup-database.js:*)",
+      "Bash(npm run build:*)"
+    ]
+  }
+}
