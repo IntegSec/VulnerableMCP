@@ -298,6 +298,15 @@ export async function startHttpServer(allowExternal: boolean = false) {
             break;
           }
 
+          case 'notifications/initialized': {
+            // This is a notification from the client indicating initialization is complete
+            // Notifications don't require a response, just acknowledge it
+            console.error('Client initialized successfully');
+            // For notifications, we don't send a result, just return success
+            res.status(204).send();
+            return;
+          }
+
           default:
             throw new Error(`Unknown method: ${method}`);
         }
