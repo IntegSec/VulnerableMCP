@@ -27,9 +27,56 @@ const colors = {
   brightYellow: '\x1b[93m',
   brightCyan: '\x1b[96m',
   brightWhite: '\x1b[97m',
+  bgRed: '\x1b[41m',
+  bgGreen: '\x1b[42m',
+  bgBlue: '\x1b[44m',
 };
 
 const c = (color: keyof typeof colors, text: string) => `${colors[color]}${text}${colors.reset}`;
+
+// Helper function to format JSON in a colorized box
+function formatBox(title: string, jsonData: any, color: 'bgBlue' | 'bgGreen' | 'bgRed', textColor: 'brightCyan' | 'brightGreen' | 'brightRed') {
+  const terminalWidth = process.stderr.columns || 120;
+  const boxWidth = Math.min(terminalWidth - 4, 150); // Max width 150, leave room for borders
+  const contentWidth = boxWidth - 4; // Space inside the box (excluding "║ " and " ║")
+
+  const jsonString = JSON.stringify(jsonData, null, 2);
+  const lines = jsonString.split('\n');
+
+  // Create header
+  const headerPadding = ' '.repeat(boxWidth);
+  const titlePadded = `  ${title}`.padEnd(boxWidth);
+
+  console.error('');
+  console.error(c(color, c('brightWhite', headerPadding)));
+  console.error(c(color, c('brightWhite', titlePadded)));
+  console.error(c(color, c('brightWhite', headerPadding)));
+
+  // Create top border
+  console.error(c('dim', '╔' + '═'.repeat(boxWidth) + '╗'));
+
+  // Process each line and handle wrapping
+  lines.forEach((line) => {
+    if (line.length <= contentWidth) {
+      // Line fits, just pad it
+      const paddedLine = line.padEnd(contentWidth);
+      console.error(c('dim', '║ ') + c(textColor, paddedLine) + c('dim', ' ║'));
+    } else {
+      // Line is too long, need to wrap it
+      let remaining = line;
+      while (remaining.length > 0) {
+        const chunk = remaining.substring(0, contentWidth);
+        const paddedChunk = chunk.padEnd(contentWidth);
+        console.error(c('dim', '║ ') + c(textColor, paddedChunk) + c('dim', ' ║'));
+        remaining = remaining.substring(contentWidth);
+      }
+    }
+  });
+
+  // Create bottom border
+  console.error(c('dim', '╚' + '═'.repeat(boxWidth) + '╝'));
+  console.error('');
+}
 
 export async function startWebSocketServer(allowExternal: boolean = false) {
   const port = parseInt(process.env.SERVER_PORT_WS || '3001');
@@ -97,11 +144,13 @@ export async function startWebSocketServer(allowExternal: boolean = false) {
         // VULNERABILITY: No input validation
 
         const message = data.toString();
-        console.error(`📨 Received message: ${message}`);
 
         let request: any;
         try {
           request = JSON.parse(message);
+
+          // Log request with colorized formatting (VULNERABILITY: May log sensitive data)
+          formatBox('▼ MCP REQUEST (WebSocket)', request, 'bgBlue', 'brightCyan');
         } catch (e) {
           // VULNERABILITY: Detailed parse error
           ws.send(JSON.stringify({
@@ -326,14 +375,19 @@ export async function startWebSocketServer(allowExternal: boolean = false) {
               throw new Error(`Unknown method: ${method}`);
           }
 
-          ws.send(JSON.stringify({
+          const response = {
             jsonrpc: '2.0',
             result,
             id,
-          }));
+          };
+
+          // Log response with colorized formatting
+          formatBox('▲ MCP RESPONSE (WebSocket)', response, 'bgGreen', 'brightGreen');
+
+          ws.send(JSON.stringify(response));
         } catch (methodError: any) {
           console.error('Error in MCP handler:', methodError);
-          ws.send(JSON.stringify({
+          const errorResponse = {
             jsonrpc: '2.0',
             error: {
               code: -32603,
@@ -345,7 +399,12 @@ export async function startWebSocketServer(allowExternal: boolean = false) {
               },
             },
             id,
-          }));
+          };
+
+          // Log error response with colorized formatting
+          formatBox('▲ MCP ERROR RESPONSE (WebSocket)', errorResponse, 'bgRed', 'brightRed');
+
+          ws.send(JSON.stringify(errorResponse));
         }
       } catch (error: any) {
         // VULNERABILITY: Detailed error messages with stack traces
