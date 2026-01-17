@@ -31,7 +31,7 @@ The Vulnerable MCP Server is a comprehensive security testing platform that impl
 
 ### Key Features
 
-- **🔌 Multi-Transport Support**: stdio, HTTP/SSE, and WebSocket
+- **🔌 Multi-Transport Support**: stdio, HTTP/SSE, HTTPS/SSE, WebSocket (WS), and Secure WebSocket (WSS)
 - **🎯 20+ Vulnerabilities**: From classic web exploits to AI-specific attacks
 - **🚩 16+ CTF Flags**: Embedded challenges at varying difficulty levels
 - **📚 Educational**: Extensive documentation and remediation guidance
@@ -80,6 +80,9 @@ npm install
 # Set up the database
 npm run setup:db
 
+# Generate SSL certificates for HTTPS/WSS (optional but recommended)
+npm run setup:certificates
+
 # Build the project
 npm run build
 ```
@@ -90,15 +93,38 @@ npm run build
 # Option 1: stdio transport (for Claude Desktop)
 npm run start:stdio
 
-# Option 2: HTTP/SSE transport (port 3000)
+# Option 2: HTTP/SSE transport (port 3000) + HTTPS/SSE (port 3443)
 npm run start:http
 
-# Option 3: WebSocket transport (port 3001)
+# Option 3: WebSocket transport (port 3001) + WSS (port 3444)
 npm run start:ws
 
-# Option 4: All transports simultaneously
+# Option 4: All transports simultaneously (HTTP, HTTPS, WS, WSS)
 npm run start:all
 ```
+
+**🔒 Network Binding Security:**
+
+By default, network transports (HTTP, HTTPS, WebSocket, WSS) bind to `127.0.0.1` (localhost only) for security. This prevents accidental exposure to your local network.
+
+To allow connections from other machines (⚠️ **DANGEROUS** - only do this in isolated environments):
+
+```bash
+# Add the --allow-external-connections flag
+node dist/index.js --transport=http --allow-external-connections
+node dist/index.js --transport=websocket --allow-external-connections
+node dist/index.js --transport=all --allow-external-connections
+```
+
+**Note:** HTTPS/WSS are enabled by default if certificates are present. To disable:
+- Set `ENABLE_HTTPS=false` to disable HTTPS
+- Set `ENABLE_WSS=false` to disable WSS
+
+**Ports:**
+- HTTP: 3000 (configurable via `SERVER_PORT_HTTP`)
+- HTTPS: 3443 (configurable via `SERVER_PORT_HTTPS`)
+- WebSocket: 3001 (configurable via `SERVER_PORT_WS`)
+- WSS: 3444 (configurable via `SERVER_PORT_WSS`)
 
 ---
 
@@ -154,8 +180,16 @@ docker run -d \
 
 Once running, the server is accessible at:
 - **HTTP/SSE**: `http://localhost:3000/mcp`
+- **HTTPS/SSE**: `https://localhost:3443/mcp` (requires certificates)
 - **WebSocket**: `ws://localhost:3001`
+- **Secure WebSocket**: `wss://localhost:3444` (requires certificates)
 - **stdio**: Via `docker exec -it vulnerable-mcp node dist/index.js --transport=stdio`
+
+**HTTPS/WSS Setup:**
+1. Generate self-signed certificates: `npm run setup:certificates`
+2. Certificates will be created in `certs/` directory
+3. Browsers will show security warnings for self-signed certs (expected for development)
+4. For production, use certificates from a trusted CA
 
 ---
 
@@ -163,8 +197,31 @@ Once running, the server is accessible at:
 
 ### Claude Desktop Integration
 
-Add to your `claude_desktop_config.json`:
+**Important:** Make sure you've built the project first (`npm run build`) before adding it to Claude Desktop.
 
+The Claude Desktop config file location:
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json` or `%LOCALAPPDATA%\Claude\claude_desktop_config.json`
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Linux**: `~/.config/Claude/claude_desktop_config.json`
+
+Add the server to your `claude_desktop_config.json`:
+
+**Windows:**
+```json
+{
+  "mcpServers": {
+    "vulnerable-mcp": {
+      "command": "node",
+      "args": ["C:/Work/VulnerableMCP/dist/index.js", "--transport", "stdio"],
+      "cwd": "C:/Work/VulnerableMCP"
+    }
+  }
+}
+```
+
+**Note:** The `cwd` field is important because the server uses relative paths for data files. Use forward slashes (`/`) in paths - they work on Windows with Node.js.
+
+**macOS/Linux:**
 ```json
 {
   "mcpServers": {
@@ -175,6 +232,38 @@ Add to your `claude_desktop_config.json`:
   }
 }
 ```
+
+**Note:** Replace the path with your actual project directory. You can use forward slashes (`/`) on Windows too - Node.js accepts both formats.
+
+### LM Studio Integration
+
+LM Studio uses a different configuration format. Edit `~/.lmstudio/mcp.json` (or `%USERPROFILE%\.lmstudio\mcp.json` on Windows):
+
+```json
+{
+  "mcpServers": {
+    "vulnerable-mcp": {
+      "url": "https://localhost:3443/mcp"
+    }
+  }
+}
+```
+
+**Options:**
+- HTTP: `"url": "http://localhost:3000/mcp"`
+- HTTPS: `"url": "https://localhost:3443/mcp"` (recommended, requires certificates)
+- WebSocket: `"url": "ws://localhost:3001"`
+- Secure WebSocket: `"url": "wss://localhost:3444"` (requires certificates)
+
+See **[LM-STUDIO-CONFIG.md](LM-STUDIO-CONFIG.md)** for detailed setup instructions.
+
+**Troubleshooting:**
+- Ensure the project is built: `npm run build`
+- Use absolute paths (not relative) with forward slashes (`/`) on Windows
+- **Important:** Include the `cwd` field set to your project root directory
+- Restart Claude Desktop after modifying the config
+- Check Claude Desktop logs for connection errors
+- If Claude Desktop crashes, verify the path is correct and the `dist/index.js` file exists
 
 ### Environment Variables
 
@@ -202,7 +291,7 @@ cp .env.example .env
 ### 2. MCP Protocol Vulnerabilities
 
 - **Missing Authentication** - All transports accept unauthenticated connections
-- **Transport Security** - HTTP/WS instead of HTTPS/WSS
+- **Transport Security** - HTTP/WS available alongside HTTPS/WSS (cleartext by default)
 - **CORS Misconfiguration** - Allows all origins
 - **Information Disclosure** - Initialization exposes all capabilities
 - **Resource Exhaustion** - No rate limiting or timeouts

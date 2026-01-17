@@ -218,9 +218,27 @@ export class VulnerableMCPServer {
   async run() {
     const transport = new StdioServerTransport();
     await this.server.connect(transport);
-    console.error('Vulnerable MCP Server running on stdio');
-    console.error('⚠️  WARNING: This server is intentionally vulnerable!');
-    console.error('⚠️  DO NOT use with sensitive data or in production!');
+
+    // ANSI Color codes
+    const colors = {
+      reset: '\x1b[0m',
+      dim: '\x1b[2m',
+      green: '\x1b[32m',
+      yellow: '\x1b[33m',
+      cyan: '\x1b[36m',
+      brightGreen: '\x1b[92m',
+      brightYellow: '\x1b[93m',
+      brightCyan: '\x1b[96m',
+    };
+    const c = (color: keyof typeof colors, text: string) => `${colors[color]}${text}${colors.reset}`;
+
+    console.error(c('brightGreen', '✅ Vulnerable MCP Server running on stdio'));
+    console.error(c('brightYellow', '⚠️  WARNING: This server is intentionally vulnerable!'));
+    console.error(c('yellow', '⚠️  DO NOT use with sensitive data or in production!'));
+    console.error('');
+    console.error(c('dim', '──────────────────────────────────────────────────'));
+    console.error(c('cyan', '🛡️  Powered by') + c('brightCyan', ' IntegSec') + c('dim', ' │ https://integsec.com'));
+    console.error(c('dim', '──────────────────────────────────────────────────'));
   }
 
   getServer() {

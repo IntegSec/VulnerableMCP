@@ -39,6 +39,12 @@ test-results/
 data/database.sqlite
 data/database.sqlite-journal
 
+# SSL Certificates (generated, should not be committed)
+certs/
+*.key
+*.crt
+*.pem
+
 # Temporary files
 tmp/
 temp/

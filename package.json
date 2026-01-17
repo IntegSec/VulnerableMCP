@@ -15,6 +15,7 @@
     "test": "vitest",
     "test:exploits": "vitest run tests/exploits",
     "setup:db": "node scripts/setup-database.js",
+    "setup:certificates": "node scripts/generate-certificates.js",
     "reset": "node scripts/reset-environment.js"
   },
   "keywords": [
