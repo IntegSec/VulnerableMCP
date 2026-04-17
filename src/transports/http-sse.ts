@@ -13,6 +13,9 @@
 import express, { Request, Response } from 'express';
 import cors from 'cors';
 import { Server } from '@modelcontextprotocol/sdk/server/index.js';
+import { SSEServerTransport } from '@modelcontextprotocol/sdk/server/sse.js';
+import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
+import { randomUUID } from 'crypto';
 
 // ANSI Color codes
 const colors = {
@@ -456,6 +459,70 @@ export async function startHttpServer(allowExternal: boolean = false) {
     });
   });
 
+  // Streamable HTTP transport (modern MCP Inspector compatible)
+  const streamableSessions = new Map<string, { transport: StreamableHTTPServerTransport }>();
+
+  app.all('/mcp-streamable', async (req: Request, res: Response) => {
+    const sessionId = req.headers['mcp-session-id'] as string | undefined;
+
+    if (sessionId && streamableSessions.has(sessionId)) {
+      // Route to existing session
+      const { transport } = streamableSessions.get(sessionId)!;
+      await transport.handleRequest(req as any, res as any, req.body);
+    } else if (!sessionId && req.method === 'POST') {
+      // New session — create server + transport
+      const { VulnerableMCPServer } = await import('../server.js');
+      const mcpServer = new VulnerableMCPServer();
+      const server = mcpServer.getServer();
+
+      const transport = new StreamableHTTPServerTransport({
+        sessionIdGenerator: () => randomUUID(),
+      });
+
+      transport.onclose = () => {
+        if (transport.sessionId) streamableSessions.delete(transport.sessionId);
+      };
+
+      await server.connect(transport);
+      await transport.handleRequest(req as any, res as any, req.body);
+
+      if (transport.sessionId) {
+        streamableSessions.set(transport.sessionId, { transport });
+      }
+    } else {
+      res.status(400).json({ error: 'Bad request' });
+    }
+  });
+
+  // MCP Inspector-compatible SSE transport
+  // Keeps a map of sessionId -> transport so POST /messages can route correctly
+  const sseTransports = new Map<string, SSEServerTransport>();
+
+  app.get('/sse', async (req: Request, res: Response) => {
+    const { VulnerableMCPServer } = await import('../server.js');
+    const mcpServer = new VulnerableMCPServer();
+    const server = mcpServer.getServer();
+
+    const transport = new SSEServerTransport('/messages', res as any);
+    sseTransports.set(transport.sessionId, transport);
+
+    req.on('close', () => {
+      sseTransports.delete(transport.sessionId);
+    });
+
+    await server.connect(transport);
+  });
+
+  app.post('/messages', async (req: Request, res: Response) => {
+    const sessionId = req.query.sessionId as string;
+    const transport = sseTransports.get(sessionId);
+    if (!transport) {
+      res.status(404).json({ error: 'Session not found' });
+      return;
+    }
+    await transport.handlePostMessage(req as any, res as any, req.body);
+  });
+
   // Start server on HTTP (VULNERABILITY: Should use HTTPS!)
   return new Promise<void>((resolve) => {
     app.listen(port, host, () => {
@@ -465,6 +532,8 @@ export async function startHttpServer(allowExternal: boolean = false) {
       console.error(c('dim', '   ├─') + c('cyan', ' Listening on: ') + c('brightWhite', `http://${host}:${port}`));
       console.error(c('dim', '   ├─') + c('cyan', ' MCP endpoint: ') + c('brightCyan', `http://${displayHost}:${port}/mcp`));
       console.error(c('dim', '   ├─') + c('cyan', ' SSE stream: ') + c('brightCyan', `http://${displayHost}:${port}/mcp/stream`));
+      console.error(c('dim', '   ├─') + c('cyan', ' Inspector SSE: ') + c('brightCyan', `http://${displayHost}:${port}/sse`));
+      console.error(c('dim', '   ├─') + c('cyan', ' Inspector HTTP: ') + c('brightCyan', `http://${displayHost}:${port}/mcp-streamable`));
       console.error(c('dim', '   └─') + c('cyan', ' Health check: ') + c('brightCyan', `http://${displayHost}:${port}/health`));
       console.error('');
       console.error(c('brightYellow', '   ⚠️  Vulnerabilities:'));
