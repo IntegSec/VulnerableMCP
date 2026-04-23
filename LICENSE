@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2025 IntegSec (https://integsec.com)
+Copyright (c) 2026 IntegSec
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,28 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
-================================================================================
-
-DISCLAIMER:
-
-⚠️  SECURITY WARNING ⚠️
-
-This software is INTENTIONALLY VULNERABLE and designed for:
-  - Security research and education
-  - Penetration testing training
-  - Security scanner development
-  - CTF (Capture The Flag) challenges
-
-DO NOT:
-  - Use this software in production environments
-  - Expose this software to untrusted networks
-  - Use this software with real or sensitive data
-  - Deploy this software without proper isolation
-
-USE AT YOUR OWN RISK.
-
-================================================================================
-
-For more information about IntegSec's security services, training, and research:
-https://integsec.com
