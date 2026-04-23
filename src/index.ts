@@ -107,7 +107,7 @@ ${c('brightRed', '║                                                           
 ${c('brightRed', '╠══════════════════════════════════════════════════════════════════╣')}
 ${c('brightRed', '║                                                                  ║')}
 ${c('brightRed', '║')}  ${c('dim', 'Created by')} ${c('brightCyan', 'IntegSec')} ${c('dim', '│ https://integsec.com')}                    ${c('brightRed', '║')}
-${c('brightRed', '║')}  ${c('dim', 'License: CC BY 4.0')}                                           ${c('brightRed', '║')}
+${c('brightRed', '║')}  ${c('dim', 'License: MIT')}                                           ${c('brightRed', '║')}
 ${c('brightRed', '║                                                                  ║')}
 ${c('brightRed', '╚══════════════════════════════════════════════════════════════════╝')}
 `;

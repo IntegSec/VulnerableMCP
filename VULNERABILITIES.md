@@ -2,7 +2,7 @@
 
 **Complete Security Vulnerability Documentation**
 
-Created by **[IntegSec](https://integsec.com)** | License: [CC BY 4.0](LICENSE)
+Created by **[IntegSec](https://integsec.com)** | License: [MIT](LICENSE)
 
 ---
 
@@ -853,5 +853,5 @@ For questions about these vulnerabilities or security training:
 
 ---
 
-**Created by IntegSec** | Licensed under CC BY 4.0
+**Created by IntegSec** | Licensed under MIT
 *Building more secure AI systems through education and research.*

@@ -2,7 +2,7 @@
 
 **Step-by-Step Guides for Each Vulnerability**
 
-Created by **[IntegSec](https://integsec.com)** | License: [CC BY 4.0](LICENSE)
+Created by **[IntegSec](https://integsec.com)** | License: [MIT](LICENSE)
 
 ---
 
@@ -894,9 +894,7 @@ export async function handleSecretsResource(uri: string, requestingUserId: numbe
 
 **Created by IntegSec** (https://integsec.com)
 
-This work is licensed under Creative Commons Attribution 4.0 International (CC BY 4.0).
-
-When using or sharing these writeups, please credit IntegSec.
+This work is licensed under the MIT License.
 
 ---
 

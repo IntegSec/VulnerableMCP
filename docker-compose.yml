@@ -1,6 +1,6 @@
 # Vulnerable MCP Server - Docker Compose
 # Created by IntegSec (https://integsec.com)
-# Licensed under CC BY 4.0
+# Licensed under MIT
 
 services:
   vulnerable-mcp:

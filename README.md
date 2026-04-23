@@ -2,7 +2,7 @@
 
 **An Intentionally Vulnerable Model Context Protocol Server for Security Testing**
 
-Created by **[IntegSec](https://integsec.com)** | License: [CC BY 4.0](LICENSE)
+Created by **[IntegSec](https://integsec.com)** | License: [MIT](LICENSE)
 
 ---
 
@@ -374,7 +374,7 @@ We welcome contributions! This project benefits from:
 - Bug fixes (for the intentional bugs' infrastructure)
 - Educational content
 
-**Attribution Required:** When contributing, you agree that IntegSec retains attribution rights under CC BY 4.0.
+**Attribution Required:** When contributing, you agree that IntegSec retains copyright under the MIT License.
 
 ---
 
@@ -398,18 +398,7 @@ We welcome contributions! This project benefits from:
 
 **Created by IntegSec** (https://integsec.com)
 
-This work is licensed under [Creative Commons Attribution 4.0 International (CC BY 4.0)](LICENSE).
-
-### Attribution Requirements
-
-When using, sharing, or building upon this work, you must:
-1. Credit IntegSec as the original creator
-2. Include a link to https://integsec.com
-3. Include a link to the license
-4. Indicate if modifications were made
-
-**Example attribution:**
-> Based on Vulnerable MCP Server by IntegSec (https://integsec.com), licensed under CC BY 4.0
+This work is licensed under the [MIT License](LICENSE).
 
 ---
 
@@ -436,6 +425,6 @@ This tool is provided for educational and authorized testing purposes only. User
 
 ---
 
-**© 2025 IntegSec. Licensed under CC BY 4.0.**
+**© 2025 IntegSec. Licensed under MIT.**
 
 *Building more secure AI systems through education and research.*

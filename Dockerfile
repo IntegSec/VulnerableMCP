@@ -1,6 +1,6 @@
 # Vulnerable MCP Server - Dockerfile
 # Created by IntegSec (https://integsec.com)
-# Licensed under CC BY 4.0
+# Licensed under MIT
 
 FROM node:20-alpine
 

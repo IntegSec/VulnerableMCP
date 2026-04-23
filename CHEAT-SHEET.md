@@ -2,7 +2,7 @@
 
 **Quick Reference Guide for Security Testing**
 
-Created by **[IntegSec](https://integsec.com)** | License: [CC BY 4.0](LICENSE)
+Created by **[IntegSec](https://integsec.com)** | License: [MIT](LICENSE)
 
 ---
 
@@ -501,7 +501,7 @@ echo "\n[7] Command Injection Flag:"
 This cheat sheet is for authorized security testing only. Always obtain proper authorization before testing any system.
 
 **Created by IntegSec** (https://integsec.com)
-**License:** CC BY 4.0 - Must credit IntegSec when using or sharing
+**License:** MIT
 
 ---
 

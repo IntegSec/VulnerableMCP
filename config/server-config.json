@@ -61,7 +61,7 @@
     "warning": "THIS IS AN INTENTIONALLY VULNERABLE APPLICATION",
     "purpose": "Educational and security testing only",
     "creator": "IntegSec",
-    "license": "CC-BY-4.0",
-    "attribution": "Must credit IntegSec (https://integsec.com) when using or sharing"
+    "license": "MIT",
+    "attribution": "IntegSec (https://integsec.com)"
   }
 }
